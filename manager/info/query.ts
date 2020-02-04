@@ -10,6 +10,9 @@ export class InfoQuery {
     }
 
     const target = message.from();
+    if (target === null) {
+      return;
+    }
     const city = content.replace('查', '').trim();
     await this.sendCityInfo(city, target);
   }

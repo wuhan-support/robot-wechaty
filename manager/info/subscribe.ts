@@ -1,4 +1,4 @@
-import { Message, Contact, Wechaty } from "wechaty";
+import { Message, Contact } from "wechaty";
 import { CacheTools } from "../../tools/cacheTool";
 import { MessageSend } from "../message/send";
 import { InfoQuery } from "./query";
@@ -13,6 +13,9 @@ export class InfoSubscribe {
     }
 
     const target = message.from();
+    if (target === null) {
+      return;
+    }
     const city = content.replace('订阅', '').trim();
     const cityInfo = CacheTools.getCity(city);
     if (!cityInfo) {

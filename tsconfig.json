@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+      "target": "es6"
+
+    , "module"          : "commonjs"
+    , "outDir"          : "dist"
+    , "traceResolution" : false
+    , "noLib"           : false
+    , "declaration"     : true
+    , "sourceMap"       : true
+    , "skipLibCheck"    : true
+    , "esModuleInterop" : true
+
+    , "emitDecoratorMetadata"  : true
+    , "experimentalDecorators" : true
+
+    , "lib": [
+      "esnext"
+    ]
+
+    , "strict"                     : true
+    , "noEmitOnError"              : true
+    , "noUnusedLocals"             : true
+    , "noImplicitReturns"          : true
+    , "noFallthroughCasesInSwitch" : true
+    , "strictNullChecks"           : true
+    , "noImplicitAny"              : false
+    , "noUnusedParameters"         : true
+    , "noImplicitThis"             : true
+  }
+  , "exclude": [
+      "node_modules/"
+    , "dist/"
+    , "tests/fixtures/"
+  ]
+  , "include": [
+      "src/bot/*.ts",
+      "src/config/*.ts",
+      "src/dataAccess/*.ts",
+      "src/service/*.ts",
+      "src/index.ts",
+      "src/utils/*.ts",
+      "src/typings.d.ts"
+  ]
+}

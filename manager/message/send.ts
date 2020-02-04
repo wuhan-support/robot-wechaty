@@ -1,4 +1,4 @@
-import { Contact, Room } from "wechaty";
+import { Contact } from "wechaty";
 
 export class MessageSend {
   public static async send (content: string, target: Contact) {

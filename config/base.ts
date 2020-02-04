@@ -1,5 +1,5 @@
 // token
-export const token: string = 'your-token';
+export const token: string = 'puppet_padplus_8768434afd7df4b2';
 
 // name
 export const name: string = 'your-botName';

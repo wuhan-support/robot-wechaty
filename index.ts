@@ -3,6 +3,7 @@ import { Wechaty, log } from 'wechaty';
 import { PuppetPadplus } from 'wechaty-puppet-padplus';
 import { name, token } from './config/base';
 import { messageListener } from './listener/messageListener';
+import { friendshipListener } from './listener/friendship';
 import express = require('express');
 import bodyParser = require('body-parser');
 import { Schedule } from './tools/scheduleTool';
@@ -31,6 +32,7 @@ bot
   })
   .on('login', function(){})
   .on('message', messageListener)
+  .on('friendship', friendshipListener)
   .start();
 
 export const app = express();

@@ -110,11 +110,11 @@ export class CacheTools {
 
   public static isEqual (oldInfo: CityCacheModel, newInfo: CityCacheModel) {
     const keys = Object.keys(newInfo);
-    keys.map(key => {
+    for (const key of keys) {
       if (oldInfo[key] !== newInfo[key]) {
         return false;
       }
-    })
+    }
 
     return true;
   }

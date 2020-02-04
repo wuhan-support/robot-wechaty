@@ -15,5 +15,5 @@ export const messageListener = async (message: Message) => {
       await InfoQuery.queryCity(message);
       break;
   }
-  const conent = message.content();
+  // const content = message.content();
 }
