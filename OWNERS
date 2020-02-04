@@ -1,0 +1,12 @@
+approvers:
+  - yc-zc
+  - MarkShawn2020
+  - windmemory
+  - SilentQianyi
+reviewers:
+  - yc-zc
+  - Maicius
+  - yu-george
+
+labels:
+- sig/robot
