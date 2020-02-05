@@ -18,14 +18,12 @@ export class FileOperate {
 
   // 同步
   public static async read (fileName: string) {
-    let data: any = {};
     try {
       const filePath = './config/' + fileName + '.json';
-      data = JSON.parse((await fileRead(filePath)).toString());
-      console.info(`读取${filePath}文件成功`);
+      const data = await fileRead(filePath);
+      console.info(`读取${filePath} 文件成功`)
+      return JSON.parse(data.toString());
     } catch (error) {
-      console.info(error);
     }
-    return data;
   }
 }

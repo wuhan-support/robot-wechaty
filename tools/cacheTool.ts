@@ -1,18 +1,36 @@
 import NodeCache = require('node-cache');
 import { cityUrl } from '../config/base';
-import { CityCacheModel, InfoModel } from '../config/model';
+import { CityCacheModel, FileSubscripteModel, InfoModel } from '../config/model';
 import { InfoSubscribe } from '../manager/info/subscribe';
 import { FileOperate } from './fileTool';
 import request = require('request');
 
 export class CacheTools {
   private static cache = new NodeCache({
-    stdTTL: 90,
+    stdTTL: 100,
   });
 
-  public static getCity (city: string) {
-    const key = `city-${city}`
-    return this.cache.get<CityCacheModel>(key);
+  public static getCity (content: string) {
+    let text = content;
+    const provinceKey = `province-${text.substr(0, 2)}`;
+    const provinceInfo = this.cache.get<CityCacheModel>(provinceKey);
+    if (provinceInfo) {
+      text = text.replace(provinceInfo.name, '');
+      if (text.length === content.length) {
+        text = text.replace(provinceInfo.shortName, '');
+      }
+    }
+
+    if (provinceInfo && text.length === 0) {
+      return provinceInfo;
+    }
+
+    const cityKey = `city-${text.substr(0, 2)}`;
+    const cityInfo = this.cache.get<CityCacheModel>(cityKey);
+    if (cityInfo) {
+      return cityInfo;
+    }
+    return false;
   }
   private static async initCity (listByArea: InfoModel[]) {
     const newCityInfos:{[city: string]: CityCacheModel} = {};
@@ -25,7 +43,7 @@ export class CacheTools {
         cured: info.cured,
         dead: info.dead,
       }
-      const provinceKey = `city-${info.provinceName}`
+      const provinceKey = `province-${info.provinceName.substr(0, 2)}`
       const oldProvince = this.cache.get<CityCacheModel>(provinceKey);
       if (!oldProvince || !this.isEqual(oldProvince, provinceInfo)) {
         if (oldProvince) {
@@ -35,7 +53,7 @@ export class CacheTools {
       }
 
       info.cities.map(city => {
-        const cityKey = `city-${city.cityName}`;
+        const cityKey = `city-${city.cityName.substr(0, 2)}`;
         const cityInfo: CityCacheModel = {
           name: city.cityName,
           shortName: '',
@@ -56,35 +74,67 @@ export class CacheTools {
     await InfoSubscribe.mass(newCityInfos);
   }
 
-  public static getSubscription (city: string) {
-    const key = `subscripte-${city}`
+  public static getSubscription (city: string, type: string) {
+    const key = `subscripte-${type}-${city}`
     return this.cache.get<{[id: string]: string}>(key);
   }
-  public static async setSubscription (city: string, info:{[id: string]: string}) {
-    const key = `subscripte-${city}`;
+  public static async setSubscription (city: string, info:{[id: string]: string}, type: string) {
+    const key = `subscripte-${type}-${city}`;
     this.cache.set<{[id: string]: string}>(key, info);
     const subscripteKey = 'subscripte';
-    let allCityInfo = this.cache.get<{[city: string]: string[]}>(subscripteKey);
+    let allCityInfo = this.cache.get<FileSubscripteModel>(subscripteKey);
     if (!allCityInfo) {
-      allCityInfo = {};
+      allCityInfo = {
+        contact: {},
+        room: {}
+      };
     }
-    allCityInfo[city] = Object.keys(info) || [];
-    this.cache.set<{[city: string]: string[]}>(subscripteKey, allCityInfo);
+    allCityInfo[type][city] = Object.keys(info) || [];
+    this.cache.set<FileSubscripteModel>(subscripteKey, allCityInfo);
+    FileOperate.write('cityInfo', JSON.stringify(allCityInfo));
+  }
+  public static async delSubscription (city: string, info:{[id: string]: string}, type: string) {
+    const key = `subscripte-${type}-${city}`;
+    this.cache.del(key);
+    const subscripteKey = 'subscripte';
+    let allCityInfo = this.cache.get<FileSubscripteModel>(subscripteKey);
+    if (!allCityInfo) {
+      allCityInfo = {
+        contact: {},
+        room: {}
+      };
+    }
+    allCityInfo[type][city] = Object.keys(info) || [];
+    this.cache.set<FileSubscripteModel>(subscripteKey, allCityInfo);
     FileOperate.write('cityInfo', JSON.stringify(allCityInfo));
   }
   public static async initSubscription () {
     const subscripteKey = `subscripte`;
-    const allCityInfo: {[city: string]: string[]} = await FileOperate.read('cityInfo');
-    this.cache.set<{[city: string]: string[]}>(subscripteKey, allCityInfo);
-    const citylist = Object.keys(allCityInfo);
-    citylist.map(city => {
-      const key = `subscripte-${city}`;
+    const allCityInfo: FileSubscripteModel = await FileOperate.read('cityInfo');
+    if (!allCityInfo) {
+      return;
+    }
+
+    this.cache.set<FileSubscripteModel>(subscripteKey, allCityInfo);
+    const contactCityList = Object.keys(allCityInfo.contact);
+    contactCityList.map(city => {
+      const key = `subscripte-contact-${city}`;
       const list:{[id: string]: string} = {};
-      allCityInfo[city].map(id => {
+      allCityInfo.contact[city].map(id => {
         list[id] = id;
       });
       this.cache.set<{[id: string]: string}>(key, list);
-    })
+    });
+
+    const roomCityList = Object.keys(allCityInfo.room);
+    roomCityList.map(city => {
+      const key = `subscripte-room-${city}`;
+      const list:{[id: string]: string} = {};
+      allCityInfo.room[city].map(id => {
+        list[id] = id;
+      });
+      this.cache.set<{[id: string]: string}>(key, list);
+    });
   }
 
   public static requestInfo () {

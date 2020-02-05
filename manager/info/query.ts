@@ -1,23 +1,37 @@
-import { Contact, Message } from "wechaty";
+import { Contact, Message, Room } from "wechaty";
 import { CacheTools } from "../../tools/cacheTool";
 import { MessageSend } from "../message/send";
+import { bot } from "../..";
 
 export class InfoQuery {
   public static async queryCity (message: Message) {
-    const content = message.text();
+    let content = message.text().trim();
+    if (message.room()) {
+      const selfContacts = await message.mentionList();
+      selfContacts.map(contact => {
+        content = content.replace(`@${contact.name()}`, '');
+      })
+      content = content.trim();
+    }
+
     if (content.indexOf('查') !== 0) {
       return;
     }
+    let target: Contact | Room | null = message.from();
+    const room = message.room();
+    if (room) {
+      target = bot.Room.load(room.id);
+    }
 
-    const target = message.from();
-    if (target === null) {
+    if (!target) {
       return;
     }
+
     const city = content.replace('查', '').trim();
     await this.sendCityInfo(city, target);
   }
 
-  public static async sendCityInfo (city: string, target: Contact) {
+  public static async sendCityInfo (city: string, target: Contact | Room) {
     const cityInfo = CacheTools.getCity(city);
     let content = `查询${city}失败，该地区名称不正确或暂无疫情信息`
     if (cityInfo) {

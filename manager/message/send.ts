@@ -1,11 +1,17 @@
-import { Contact } from "wechaty";
+import { Contact, Room } from "wechaty";
 
 export class MessageSend {
-  public static async send (content: string, target: Contact) {
+  public static async send (content: string, target: Contact | Room) {
     await target.say(content);
   }
 
-  public static async mass (content: string, targets: Contact[]) {
+  public static async massContact (content: string, targets: Contact[]) {
+    await Promise.all(targets.map(async target => {
+      await target.say(content);
+    }));
+  }
+
+  public static async massRoom (content: string, targets: Room[]) {
     await Promise.all(targets.map(async target => {
       await target.say(content);
     }));

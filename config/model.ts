@@ -25,3 +25,12 @@ export interface InfoModel {
   comment: string,
   cities: CityModel[]
 }
+
+export interface FileSubscripteModel {
+  contact: {
+    [city: string]: string[],
+  },
+  room: {
+    [city: string]: string[],
+  },
+}
