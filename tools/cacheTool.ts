@@ -6,9 +6,7 @@ import { FileOperate } from './fileTool';
 import request = require('request');
 
 export class CacheTools {
-  private static cache = new NodeCache({
-    stdTTL: 100,
-  });
+  private static cache = new NodeCache();
 
   public static getCity (content: string) {
     let text = content;

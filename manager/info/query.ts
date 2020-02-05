@@ -1,16 +1,19 @@
-import { Contact, Message, Room } from "wechaty";
-import { CacheTools } from "../../tools/cacheTool";
-import { MessageSend } from "../message/send";
-import { bot } from "../..";
+import { Contact, Message, Room } from 'wechaty';
+import { CacheTools } from '../../tools/cacheTool';
+import { MessageSend } from '../message/send';
 
 export class InfoQuery {
   public static async queryCity (message: Message) {
     let content = message.text().trim();
-    if (message.room()) {
+    const room = message.room();
+    const mentionSelf = message.mentionSelf();
+    if (room && mentionSelf) {
       const selfContacts = await message.mentionList();
-      selfContacts.map(contact => {
+      for (const contact of selfContacts) {
         content = content.replace(`@${contact.name()}`, '');
-      })
+        content = content.replace(`@${await room.alias(contact)}`, '');
+      }
+
       content = content.trim();
     }
 
@@ -18,9 +21,8 @@ export class InfoQuery {
       return;
     }
     let target: Contact | Room | null = message.from();
-    const room = message.room();
     if (room) {
-      target = bot.Room.load(room.id);
+      target = room;
     }
 
     if (!target) {
