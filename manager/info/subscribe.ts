@@ -36,7 +36,7 @@ export class InfoSubscribe {
     }
     const cityInfo = CacheTools.getCity(city);
     if (!cityInfo) {
-      await MessageSend.send(`订阅${city}失败，该地区名称不正确或暂无疫情信息`, target)
+      await MessageSend.send(`订阅${city}失败\n输入不正确或该地区暂无疫情信息`, target)
       return;
     }
 
@@ -47,7 +47,7 @@ export class InfoSubscribe {
     }
     subscripteInfos[target.id] = target.id;
     await CacheTools.setSubscription(city, subscripteInfos, type);
-    await MessageSend.send(`您已经成功订阅${city}的疫情，如果有数据更新，我会及时通知您！`, target)
+    await MessageSend.send(`订阅${city}成功\n如果疫情信息有更新，我会及时通知您！`, target)
     await InfoQuery.sendCityInfo(city, target);
   }
 
@@ -77,19 +77,19 @@ export class InfoSubscribe {
     const city = content.replace('取消订阅', '').trim();
     const cityInfo = CacheTools.getCity(city);
     if (!cityInfo) {
-      await MessageSend.send(`取消订阅${city}失败，该地区名称不正确或暂无疫情信息`, target)
+      await MessageSend.send(`取消订阅${city}失败\n输入不正确或该地区暂无疫情信息`, target)
       return;
     }
 
     const type = message.room() ? TargetType.Room : TargetType.Contact;
     let subscripteInfos = CacheTools.getSubscription(city, type);
     if (!subscripteInfos || !subscripteInfos[target.id]) {
-      await MessageSend.send(`取消订阅${city}失败，尚未订阅该区域疫情信息`, target)
+      await MessageSend.send(`取消订阅${city}失败，尚未订阅该地区疫情信息`, target)
       return;
     }
     delete subscripteInfos[target.id];
     await CacheTools.delSubscription(city, subscripteInfos, type);
-    await MessageSend.send(`您已经成功取消订阅${city}的疫情！`, target)
+    await MessageSend.send(`取消订阅${city}成功\n您将不会再收到疫情信息的更新！`, target)
   }
 
   public static async mass (newCityInfos: {[city: string]: CityCacheModel}) {
@@ -97,7 +97,7 @@ export class InfoSubscribe {
     await Promise.all(citys.map(async city => {
       const cityInfo = newCityInfos[city];
       // TODO 更新新增病例信息
-      const content = `${cityInfo.name}目前有确诊病例${cityInfo.confirmed}例，死亡病例${cityInfo.dead}例，治愈病例${cityInfo.cured}例。今日共累计新增确诊病例${cityInfo.suspected}例；`;
+      const content = `${cityInfo.name}目前有：\n确诊${cityInfo.confirmed}例\n治愈${cityInfo.cured}例\n死亡${cityInfo.dead}例\n今日共累计新增确诊病例${cityInfo.suspected}例`;
       const contactInfos = CacheTools.getSubscription(city, TargetType.Contact);
       const contacts: Contact[] = [];
       if (contactInfos) {

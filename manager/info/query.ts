@@ -39,10 +39,10 @@ export class InfoQuery {
 
   public static async sendCityInfo (city: string, target: Contact | Room) {
     const cityInfo = CacheTools.getCity(city);
-    let content = `查询${city}失败，该地区名称不正确或暂无疫情信息`
+    let content = `查询${city}失败\n该地区名称不正确或暂无疫情信息`
     if (cityInfo) {
       // TODO 更新新增病例信息
-      content = `${cityInfo.name}目前有确诊病例${cityInfo.confirmed}例，死亡病例${cityInfo.dead}例，治愈病例${cityInfo.cured}例。今日共累计新增确诊病例${cityInfo.suspected}例；`;
+      content = `${cityInfo.name}目前有：\n确诊${cityInfo.confirmed}例\n治愈${cityInfo.cured}例\n死亡${cityInfo.dead}例\n今日共累计新增确诊病例${cityInfo.suspected}例`;
     }
     await MessageSend.send(content, target);
   }
