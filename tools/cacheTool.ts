@@ -1,5 +1,5 @@
 import NodeCache = require('node-cache');
-import { cityUrl } from '../config/base';
+import { epidemicUrl, searchUrl } from '../config/base';
 import { CityCacheModel, FileSubscripteModel, InfoModel } from '../config/model';
 import { InfoSubscribe } from '../manager/info/subscribe';
 import { FileOperate } from './fileTool';
@@ -30,6 +30,7 @@ export class CacheTools {
     }
     return false;
   }
+
   private static async initCity (listByArea: InfoModel[]) {
     const newCityInfos:{[city: string]: CityCacheModel} = {};
     listByArea.map(info => {
@@ -135,9 +136,9 @@ export class CacheTools {
     });
   }
 
-  public static requestInfo () {
+  public static requestEpidemicInfo () {
     request({
-      url: cityUrl,
+      url: epidemicUrl,
     }, (
       err: Error,
       res: any,
@@ -155,6 +156,27 @@ export class CacheTools {
       }
     });
   }
+
+  // public static requestSearcchInfo () {
+  //   request({
+  //     url: searchUrl,
+  //   }, (
+  //     err: Error,
+  //     res: any,
+  //     body: any,
+  //   ) => {
+  //     if (err) {
+  //       console.error('request info ERROR:', `error info is ${err.message}`)
+  //     } else {
+  //       if (res.statusCode === 200) {
+  //         const jsonStr = JSON.parse(body);
+  //         const list = jsonStr.data.listByArea;
+  //         this.initCity(list);
+  //         console.info(`request info success`);
+  //       }
+  //     }
+  //   });
+  // }
 
   public static isEqual (oldInfo: CityCacheModel, newInfo: CityCacheModel) {
     const keys = Object.keys(newInfo);
