@@ -84,7 +84,7 @@ export class InfoSubscribe {
     const type = message.room() ? TargetType.Room : TargetType.Contact;
     let subscripteInfos = CacheTools.getSubscription(city, type);
     if (!subscripteInfos || !subscripteInfos[target.id]) {
-      await MessageSend.send(`取消订阅${city}失败，尚未订阅该地区疫情信息`, target)
+      await MessageSend.send(`取消订阅${city}失败\n尚未订阅该地区疫情信息`, target)
       return;
     }
     delete subscripteInfos[target.id];
