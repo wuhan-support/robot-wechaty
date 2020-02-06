@@ -10,6 +10,10 @@ export class CacheTools {
 
   public static getCity (content: string) {
     let text = content;
+    if (text === '中国') {
+      return this.cache.get<CityCacheModel>('中国') || false;
+    }
+
     const provinceKey = `province-${text.substr(0, 2)}`;
     const provinceInfo = this.cache.get<CityCacheModel>(provinceKey);
     if (provinceInfo) {
@@ -32,8 +36,20 @@ export class CacheTools {
   }
 
   private static async initCity (listByArea: InfoModel[]) {
+    const chinaInfo: CityCacheModel = {
+      name: '中国',
+      shortName: '',
+      confirmed: 0,
+      suspected: 0,
+      cured: 0,
+      dead: 0,
+    }
     const newCityInfos:{[city: string]: CityCacheModel} = {};
     listByArea.map(info => {
+      chinaInfo.confirmed = chinaInfo.confirmed + info.confirmed;
+      chinaInfo.suspected = chinaInfo.suspected + info.suspected;
+      chinaInfo.cured = chinaInfo.cured + info.cured;
+      chinaInfo.dead = chinaInfo.dead + info.dead;
       const provinceInfo: CityCacheModel = {
         name: info.provinceName,
         shortName: info.provinceShortName,
@@ -71,6 +87,7 @@ export class CacheTools {
       });
     });
     await InfoSubscribe.mass(newCityInfos);
+    this.cache.set<CityCacheModel>('中国', chinaInfo);
   }
 
   public static getSubscription (city: string, type: string) {

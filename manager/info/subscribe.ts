@@ -25,7 +25,10 @@ export class InfoSubscribe {
     } else {
       city = content.replace('订阅', '').trim();
     }
-    
+
+    city = city.replace('中华人民共和国', '中国');
+    city = city.replace('全国', '中国');
+
     let target: Contact | Room | null = message.from();
     const room = message.room();
     if (room) {
