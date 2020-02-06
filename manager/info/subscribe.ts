@@ -16,21 +16,24 @@ export class InfoSubscribe {
       })
       content = content.trim();
     }
-    if (content.indexOf('订阅') !== 0) {
-      return;
-    }
 
+    let city = ''
+    if (content.indexOf('订') !== 0 || content.indexOf('订阅') !== 0) {
+      return;
+    } else if (content.indexOf('订') === 0) {
+      city = content.replace('订', '').trim();
+    } else {
+      city = content.replace('订阅', '').trim();
+    }
+    
     let target: Contact | Room | null = message.from();
     const room = message.room();
     if (room) {
       target = bot.Room.load(room.id);
     }
-
     if (!target) {
       return;
     }
-
-    const city = content.replace('订阅', '').trim();
     const cityInfo = CacheTools.getCity(city);
     if (!cityInfo) {
       await MessageSend.send(`订阅${city}失败，该地区名称不正确或暂无疫情信息`, target)
@@ -93,6 +96,7 @@ export class InfoSubscribe {
     const citys = Object.keys(newCityInfos);
     await Promise.all(citys.map(async city => {
       const cityInfo = newCityInfos[city];
+      // TODO 更新新增病例信息
       const content = `${cityInfo.name}目前有确诊病例${cityInfo.confirmed}例，死亡病例${cityInfo.dead}例，治愈病例${cityInfo.cured}例。今日共累计新增确诊病例${cityInfo.suspected}例；`;
       const contactInfos = CacheTools.getSubscription(city, TargetType.Contact);
       const contacts: Contact[] = [];
@@ -116,6 +120,5 @@ export class InfoSubscribe {
         await MessageSend.massRoom(content, rooms);
       }
     }));
-
   }
 }
