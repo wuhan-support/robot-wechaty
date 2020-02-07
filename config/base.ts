@@ -1,5 +1,5 @@
 // token
-export const token: string = 'puppet_padplus_5858574b1204a04b';
+export const token: string = 'your-token';
 
 // name
 export const name: string = 'your-botName';
@@ -7,3 +7,9 @@ export const name: string = 'your-botName';
 // url
 export const epidemicUrl: string = 'https://service-f9fjwngp-1252021671.bj.apigw.tencentcs.com/release/pneumonia';
 export const searchUrl: string = 'http://2019ncov.nosugartech.com/data.json';
+
+// shimo
+export const shimoClientId: string = '';
+export const shimoClientSecret: string = '';
+export const shimoUrl: string = '';
+export const shimoUserName: string = '';
