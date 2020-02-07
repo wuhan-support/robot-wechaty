@@ -3,7 +3,7 @@ import { CacheTools } from '../../tools/cacheTool';
 import { MessageSend } from '../message/send';
 
 export class InfoQuery {
-  public static async queryCity (message: Message) {
+  public static async query (message: Message) {
     let content = message.text().trim();
     const room = message.room();
     const mentionSelf = message.mentionSelf();
