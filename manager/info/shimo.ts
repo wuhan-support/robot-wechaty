@@ -9,11 +9,11 @@ export class InfoShimo {
   public static async process (message: Message) {
     switch (shimo.status) {
       case ShimoStatus.Prepare:
-        await InfoShimo.init(message);
-      case ShimoStatus.Prepare:
-        await InfoShimo.init(message);
-      case ShimoStatus.Prepare:
-        await InfoShimo.init(message);
+        await this.init(message);
+      case ShimoStatus.Init:
+        await this.setUserName(message);
+      case ShimoStatus.Settle:
+        await this.setUrl(message);
     }
   }
   public static async init (message: Message) {
