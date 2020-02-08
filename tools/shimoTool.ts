@@ -43,7 +43,11 @@ class Shimo {
       this.setStatus(ShimoStatus.Init);
   }
 
-  public addFile (name: string, guid: string) {
+  public getGuids () {
+    this.files.set(name, guid);
+  }
+
+  public addGuid (name: string, guid: string) {
     this.files.set(name, guid);
   }
 
@@ -128,6 +132,45 @@ class Shimo {
       }
     });
     return jsonStr;
+  }
+
+  /**
+   * @param {string} guid
+   * @returns {Promise.<{ file, token }>}
+   */
+  public async addFiles (guid: string, level: number) {
+    const token = await this.getToken({
+      info: {
+        fileGuid: guid,
+        filePermissions: {
+          readable: true,
+          editable: true,
+          commentable: true
+        }
+      }
+    });
+    let jsonStr: any;
+    await request({
+      url: shimoUrl + `/files?folder=${guid}&level=${level}`,
+      method: 'GET',
+      json: true,
+      query: {
+        withConfig: true
+      },
+      headers: {
+        Authorization: `Bearer ${token.accessToken}`
+      }
+    }, (err: Error, res: any, body: any) => {
+      if (err) {
+        console.error('request shimo info ERROR:', `error info is ${err.message}`)
+      } else {
+        if (res.statusCode === 200) {
+          jsonStr = JSON.parse(body);
+          console.info(`request shimo get token success`);
+        }
+      }
+    });
+    
   }
 
   /**

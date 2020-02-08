@@ -15,7 +15,7 @@ export class InfoShimo {
       case ShimoStatus.Settle:
         await this.setUrl(message);
       case ShimoStatus.Ready:
-        await this.addFile(message);
+        await this.fileProcess(message);
       break;
     }
   }
@@ -49,13 +49,15 @@ export class InfoShimo {
     shimo.setUrl(url)
   }
 
-  public static async addFile (message: Message) {
+  public static async fileProcess (message: Message) {
     let content = message.text().trim();
-    if (content.indexOf('添加文件') !== 0) {
-        return;
+
+    if (content.indexOf('添加文件') === 0) {
+        let [name, guid] = content.replace('添加文件', '').trim().split("\n"); 
+        shimo.addFile(name, guid)
+    } else if (content.indexOf('添加文件夹') === 0) {
+        let [name, guid] = content.replace('添加文夹', '').trim().split("\n"); 
+        shimo.addFiles(name, guid)
     }
-    // set Url here.
-    let [name, guid] = content.replace('添加文件', '').trim().split("\n"); 
-    shimo.addFile(name, guid)
   }
 }
