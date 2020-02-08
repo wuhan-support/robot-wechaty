@@ -8,7 +8,7 @@ class Shimo {
   userName: string;
   scope: string;
   url: string;
-  status; // TODO 这里应该声明什么类型啊？
+  status: string; // TODO 这里应该声明什么类型啊？ 最简单的是string 但是不是很好
   token: string;
   files: Map<string, string>;
 
@@ -32,20 +32,26 @@ class Shimo {
       this.userName = userName;
       this.setStatus(ShimoStatus.Settle);
   }
+  public getUserName () {
+    return this.userName;
+}
 
   public setUrl (url: string) {
       this.url = url;
       this.setStatus(ShimoStatus.Ready);
   }
+  public getUrl () {
+    return this.url;
+  }
 
   public setStatus (status) {
       this.status = status;
-      this.setStatus(ShimoStatus.Init);
+      // this.setStatus(ShimoStatus.Init); // TODO: 应该不需要
   }
 
-  public getGuids () {
-    this.files.set(name, guid);
-  }
+  // public getGuids () { // TODO: 这个函数是要干什么用
+  //   this.files.set(name, guid);
+  // }
 
   public addGuid (name: string, guid: string) {
     this.files.set(name, guid);
@@ -61,13 +67,13 @@ class Shimo {
       clientSecret: this.clientSecret,
       scope: this.scope,
       grantType: 'client_credentials',
-      clientUserId: `shimo_cabinet_${shimoUserName}`
+      clientUserId: `shimo_cabinet_${this.getUserName()}`
     }, options)
 
     let token: any;
 
     await request({
-      url: shimoUrl + '/oauth2/token',
+      url: this.getUrl() + '/oauth2/token',
       method: 'POST',
       json: true,
       body,
@@ -89,7 +95,7 @@ class Shimo {
     const token = await this.getToken()
     let jsonStr: any;
     await request({
-      url: shimoUrl + '/files',
+      url: this.getUrl() + '/files',
       method: 'POST',
       json: true,
       body: data,
@@ -114,7 +120,7 @@ class Shimo {
     const token = await this.getToken()
     let jsonStr: any;
     await request({
-      url: shimoUrl + '/files/import',
+      url: this.getUrl() + '/files/import',
       method: 'POST',
       json: true,
       body: data,
@@ -151,7 +157,7 @@ class Shimo {
     });
     let jsonStr: any;
     await request({
-      url: shimoUrl + `/files?folder=${guid}&level=${level}`,
+      url: this.getUrl() + `/files?folder=${guid}&level=${level}`,
       method: 'GET',
       json: true,
       query: {
@@ -170,7 +176,7 @@ class Shimo {
         }
       }
     });
-    
+
   }
 
   /**
@@ -178,7 +184,7 @@ class Shimo {
    * @returns {Promise.<{ file, token }>}
    */
   public async getFile (name: string) {
-    guid = this.getGuid(name)
+    const guid = this.getGuid(name)
     const token = await this.getToken({
       info: {
         fileGuid: guid,
@@ -191,7 +197,7 @@ class Shimo {
     });
     let jsonStr: any;
     await request({
-      url: shimoUrl + `/files/${guid}`,
+      url: this.getUrl() + `/files/${guid}`,
       method: 'GET',
       json: true,
       query: {
@@ -207,6 +213,13 @@ class Shimo {
         if (res.statusCode === 200) {
           jsonStr = JSON.parse(body);
           console.info(`request shimo get token success`);
+          // TODO: 举例 应该怎么输出 根据数据可以定一下类型
+          // TODO: 数组
+          // jsonStr.map(data => {
+          //   console.info(`get file data: ${JSON.stringify(data)}`);
+          // })
+          // TODO: json类型
+          // console.info(`get file data: ${JSON.stringify(data)}`);
         }
       }
     });
@@ -219,8 +232,8 @@ class Shimo {
    * @param {string} [toType]
    * @returns {Promise.<{ file, token }>}
    */
-  public async exportFile (name: string, toType) {
-    guid = this.getGuid(name)
+  public async exportFile (name: string, toType: string) {
+    const guid = this.getGuid(name)
     const token = await this.getToken({
       info: {
         fileGuid: guid,
@@ -233,7 +246,7 @@ class Shimo {
     });
     let jsonStr: any;
     await request({
-      url: shimoUrl + `/files/${guid}/export`,
+      url: this.getUrl() + `/files/${guid}/export`,
       method: 'GET',
       json: true,
       query: { toType },
@@ -255,7 +268,7 @@ class Shimo {
   }
 
   public async deleteFile (name: string) {
-    guid = this.getGuid(name)
+    const guid = this.getGuid(name)
     const token = await this.getToken({
       info: {
         fileGuid: guid,
@@ -268,7 +281,7 @@ class Shimo {
     });
     let jsonStr: any;
     await request({
-      url: shimoUrl + `/files/${guid}`,
+      url: this.getUrl() + `/files/${guid}`,
       method: 'DELETE',
       json: true,
       headers: {
@@ -292,8 +305,8 @@ class Shimo {
    * @param {string} guid
    * @param {string} title
    */
-  public async updateTitle (name: string, title) {
-    guid = this.getGuid(name)
+  public async updateTitle (name: string, title: string) {
+    const guid = this.getGuid(name)
     const token = await this.getToken({
       info: {
         fileGuid: guid,
@@ -306,7 +319,7 @@ class Shimo {
     });
     let jsonStr: any;
     await request({
-      url: shimoUrl + `/files/${guid}/title`,
+      url: this.getUrl() + `/files/${guid}/title`,
       method: 'PATCH',
       json: true,
       body: { name: title },
