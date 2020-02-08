@@ -30,7 +30,9 @@ bot
       })
     }
   })
-  .on('login', function(){})
+  .on('login', user => {
+    console.info(`Login: ${user}`);
+  })
   .on('message', messageListener)
   .on('friendship', friendshipListener)
   .start();

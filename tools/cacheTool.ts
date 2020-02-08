@@ -10,7 +10,7 @@ export class CacheTools {
 
   public static getCity (content: string) {
     let text = content;
-    if (text === '中国') {
+    if (text === '中国' || text === '全国') {
       return this.cache.get<CityCacheModel>('中国') || false;
     }
 
@@ -168,7 +168,7 @@ export class CacheTools {
           const jsonStr = JSON.parse(body);
           const list = jsonStr.data.listByArea;
           this.initCity(list);
-          console.info(`request info success`);
+          console.info(`update info success`);
         }
       }
     });
