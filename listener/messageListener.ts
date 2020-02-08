@@ -21,10 +21,9 @@ export const messageListener = async (message: Message) => {
       await InfoSubscribe.subscribe(message);
       await InfoSubscribe.delSubscribe(message);
       await InfoQuery.query(message);
+      if (!room) {
+        await InfoShimo.process(message);
+      }
       break;
-  }
-
-  if (!room && msgType === MessageType.Text) {
-    await InfoShimo.process(message);
   }
 }

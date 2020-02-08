@@ -14,27 +14,27 @@ export class InfoShimo {
         await this.setUserName(message);
       case ShimoStatus.Settle:
         await this.setUrl(message);
+      break;
     }
   }
   public static async init (message: Message) {
     let content = message.text().trim();
     // set clientId and and clientSecret here.
-    let clientId = ''
-    let clientSecret = ''
+    let [clientId, clientSecret] = content.replace('石墨登录', '').trim().split("\n"); 
     shimo.init(clientId, clientSecret)
   }
 
   public static async setUserName (message: Message) {
     let content = message.text().trim();
     // set userName here.
-    let userName = ''
+    let userName = content.replace('石墨用户名', '').trim(); 
     shimo.setUserName(userName)
   }
 
   public static async setUrl (message: Message) {
     let content = message.text().trim();
     // set Url here.
-    let url = ''
+    let url = content.replace('石墨链接', '').trim(); 
     shimo.setUrl(url)
   }
 }
