@@ -3,7 +3,7 @@ import { CacheTools } from "../../tools/cacheTool";
 import { MessageSend } from "../message/send";
 import { bot } from "../..";
 import { TargetType, ShimoStatus } from "../../config/enum";
-import { shimo } from "../../config/base";
+import { shimo } from "../../tools/shimoTool";
 
 export class InfoShimo {
   public static async process (message: Message) {
@@ -14,18 +14,26 @@ export class InfoShimo {
         await this.setUserName(message);
       case ShimoStatus.Settle:
         await this.setUrl(message);
+      case ShimoStatus.Ready:
+        await this.addFile(message);
       break;
     }
   }
   public static async init (message: Message) {
     let content = message.text().trim();
+    if (content.indexOf('石墨登录') !== 0) {
+        return;
+    }
     // set clientId and and clientSecret here.
-    let [clientId, clientSecret] = content.replace('石墨登录', '').trim().split("\n"); 
+    let [clientId, clientSecret] = content.replace('石墨登录', '').trim().split("\n");
     shimo.init(clientId, clientSecret)
   }
 
   public static async setUserName (message: Message) {
     let content = message.text().trim();
+    if (content.indexOf('石墨用户名') !== 0) {
+        return;
+    }
     // set userName here.
     let userName = content.replace('石墨用户名', '').trim(); 
     shimo.setUserName(userName)
@@ -33,8 +41,21 @@ export class InfoShimo {
 
   public static async setUrl (message: Message) {
     let content = message.text().trim();
+    if (content.indexOf('石墨链接') !== 0) {
+        return;
+    }
     // set Url here.
     let url = content.replace('石墨链接', '').trim(); 
     shimo.setUrl(url)
+  }
+
+  public static async addFile (message: Message) {
+    let content = message.text().trim();
+    if (content.indexOf('添加文件') !== 0) {
+        return;
+    }
+    // set Url here.
+    let [name, guid] = content.replace('添加文件', '').trim().split("\n"); 
+    shimo.addFile(name, guid)
   }
 }
