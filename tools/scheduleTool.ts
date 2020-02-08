@@ -14,6 +14,6 @@ export class Schedule {
   }
 
   public static async minFunction () {
-    CacheTools.requestInfo();
+    CacheTools.requestEpidemicInfo();
   }
 }

@@ -1,5 +1,5 @@
 import NodeCache = require('node-cache');
-import { epidemicUrl, searchUrl } from '../config/base';
+import { epidemicUrl } from '../config/base';
 import { CityCacheModel, FileSubscripteModel, InfoModel } from '../config/model';
 import { InfoSubscribe } from '../manager/info/subscribe';
 import { FileOperate } from './fileTool';
