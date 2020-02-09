@@ -2,3 +2,5 @@ node_modules
 package-lock.json
 *.memory-card.json
 config/cityInfo.json
+*.js
+*.lock

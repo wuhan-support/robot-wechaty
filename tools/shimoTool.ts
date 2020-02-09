@@ -13,55 +13,55 @@ class Shimo {
   files: Map<string, string>;
 
   constructor(clientId: string = '', clientSecret: string = '', userName: string = '', scope: string = '', url: string = '', status = ShimoStatus.Prepare) {
-      this.clientId = clientId;
-      this.clientSecret = clientSecret;
-      this.userName = userName;
-      this.url = url;
-      this.scope = scope;
-      this.status = status;
-      this.files = new Map<string, string>()
+    this.clientId = clientId;
+    this.clientSecret = clientSecret;
+    this.userName = userName;
+    this.url = url;
+    this.scope = scope;
+    this.status = status;
+    this.files = new Map<string, string>()
   }
 
-  public init (clientId: string, clientSecret: string) {
-      this.clientId = clientId;
-      this.clientSecret = clientSecret;
-      this.setStatus(ShimoStatus.Init);
+  public init(clientId: string, clientSecret: string) {
+    this.clientId = clientId;
+    this.clientSecret = clientSecret;
+    this.setStatus(ShimoStatus.Init);
   }
 
-  public setUserName (userName: string) {
-      this.userName = userName;
-      this.setStatus(ShimoStatus.Settle);
+  public setUserName(userName: string) {
+    this.userName = userName;
+    this.setStatus(ShimoStatus.Settle);
   }
-  public getUserName () {
+  public getUserName() {
     return this.userName;
-}
-
-  public setUrl (url: string) {
-      this.url = url;
-      this.setStatus(ShimoStatus.Ready);
   }
-  public getUrl () {
+
+  public setUrl(url: string) {
+    this.url = url;
+    this.setStatus(ShimoStatus.Ready);
+  }
+  public getUrl() {
     return this.url;
   }
 
-  public setStatus (status) {
-      this.status = status;
-      // this.setStatus(ShimoStatus.Init); // TODO: 应该不需要
+  public setStatus(status) {
+    this.status = status;
+    // this.setStatus(ShimoStatus.Init); // TODO: 应该不需要
   }
 
   // public getGuids () { // TODO: 这个函数是要干什么用
   //   this.files.set(name, guid);
   // }
 
-  public addGuid (name: string, guid: string) {
+  public addGuid(name: string, guid: string) {
     this.files.set(name, guid);
   }
 
-  public getGuid (name: string) {
+  public getGuid(name: string) {
     this.files.get(name)
   }
 
-  public async getToken (options?: any) {
+  public async getToken(options?: any) {
     const body = Object.assign({
       clientId: this.clientId,
       clientSecret: this.clientSecret,
@@ -91,7 +91,7 @@ class Shimo {
     return token;
   }
 
-  public async createFile (data) {
+  public async createFile(data) {
     const token = await this.getToken()
     let jsonStr: any;
     await request({
@@ -116,7 +116,7 @@ class Shimo {
     return jsonStr;
   }
 
-  public async importFile (data) {
+  public async importFile(data) {
     const token = await this.getToken()
     let jsonStr: any;
     await request({
@@ -144,7 +144,7 @@ class Shimo {
    * @param {string} guid
    * @returns {Promise.<{ file, token }>}
    */
-  public async addFiles (guid: string, level: number) {
+  public async addFiles(guid: string, level: number) {
     const token = await this.getToken({
       info: {
         fileGuid: guid,
@@ -183,7 +183,7 @@ class Shimo {
    * @param {string} guid
    * @returns {Promise.<{ file, token }>}
    */
-  public async getFile (name: string) {
+  public async getFile(name: string) {
     const guid = this.getGuid(name)
     const token = await this.getToken({
       info: {
@@ -232,7 +232,7 @@ class Shimo {
    * @param {string} [toType]
    * @returns {Promise.<{ file, token }>}
    */
-  public async exportFile (name: string, toType: string) {
+  public async exportFile(name: string, toType: string) {
     const guid = this.getGuid(name)
     const token = await this.getToken({
       info: {
@@ -267,7 +267,7 @@ class Shimo {
     return jsonStr;
   }
 
-  public async deleteFile (name: string) {
+  public async deleteFile(name: string) {
     const guid = this.getGuid(name)
     const token = await this.getToken({
       info: {
@@ -305,7 +305,7 @@ class Shimo {
    * @param {string} guid
    * @param {string} title
    */
-  public async updateTitle (name: string, title: string) {
+  public async updateTitle(name: string, title: string) {
     const guid = this.getGuid(name)
     const token = await this.getToken({
       info: {
@@ -349,7 +349,7 @@ class Shimo {
    * @param {object} [options.query]
    * @param {object} [options.headers]
    */
-  async proxy (url: string, options:any = {}) {
+  async proxy(url: string, options: any = {}) {
     if (options.headers) {
       delete options.headers.host
     }

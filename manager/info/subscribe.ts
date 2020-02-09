@@ -20,10 +20,10 @@ export class InfoSubscribe {
     let city = ''
     if (content.indexOf('订') !== 0 || content.indexOf('订阅') !== 0) {
       return;
-    } else if (content.indexOf('订') === 0) {
-      city = content.replace('订', '').trim();
-    } else {
+    } else if (content.indexOf('订阅') === 0) {
       city = content.replace('订阅', '').trim();
+    } else {
+      city = content.replace('订', '').trim();
     }
 
     city = city.replace('中华人民共和国', '中国');
