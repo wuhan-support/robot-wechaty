@@ -3,7 +3,8 @@ import { CacheTools } from '../../tools/cacheTool';
 import { MessageSend } from '../message/send';
 
 export class InfoQuery {
-  public static async query (message: Message) {
+  public static async queryCity (message: Message) {
+    console.info(`Message: ${message}`);
     let content = message.text().trim();
     const room = message.room();
     const mentionSelf = message.mentionSelf();
@@ -16,14 +17,14 @@ export class InfoQuery {
       }
       content = content.trim();
     }
-    
+
     let city = ''
-    if (content.indexOf('查') !== 0 || content.indexOf('查询') !== 0) {
+    if (!content.includes('查') && !content.includes('查询')) {
       return;
-    } else if (content.indexOf('查') === 0) {
-      city = content.replace('查', '').trim();
-    } else {
+    } else if (content.includes('查询')) {
       city = content.replace('查询', '').trim();
+    } else {
+      city = content.replace('查', '').trim();
     }
 
     let target: Contact | Room | null = message.from();
