@@ -5,7 +5,8 @@ you need a wechaty token.
 
 ## Install
 ```js
-npm i
+npm install typescript
+npm install ts-node
 ```
 
 ## Run
@@ -27,3 +28,4 @@ ts-node index.ts
 
 ## Question：
   配置存在本地，未区分微信号
+  
