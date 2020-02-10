@@ -1,8 +1,5 @@
-import { Message, Contact, Room } from "wechaty";
-import { CacheTools } from "../../tools/cacheTool";
-import { MessageSend } from "../message/send";
-import { bot } from "../..";
-import { TargetType, ShimoStatus } from "../../config/enum";
+import { Message } from "wechaty";
+import { ShimoStatus } from "../../config/enum";
 import { shimo } from "../../tools/shimoTool";
 
 export class InfoShimo {
@@ -10,13 +7,16 @@ export class InfoShimo {
     switch (shimo.status) {
       case ShimoStatus.Prepare:
         await this.init(message);
+        break;
       case ShimoStatus.Init:
         await this.setUserName(message);
+        break;
       case ShimoStatus.Settle:
         await this.setUrl(message);
+        break;
       case ShimoStatus.Ready:
         await this.fileProcess(message);
-      break;
+        break;
     }
   }
   public static async init (message: Message) {
@@ -53,11 +53,13 @@ export class InfoShimo {
     let content = message.text().trim();
 
     if (content.indexOf('添加文件') === 0) {
-        let [name, guid] = content.replace('添加文件', '').trim().split("\n"); 
-        shimo.addFile(name, guid)
+        // let [name, guid] = content.replace('添加文件', '').trim().split("\n"); 
+        // TODO: 没有这个函数 应该是 createFile 吧
+        // shimo.addFile(name, guid)
     } else if (content.indexOf('添加文件夹') === 0) {
-        let [name, guid] = content.replace('添加文夹', '').trim().split("\n"); 
-        shimo.addFiles(name, guid)
+        // let [name, guid] = content.replace('添加文夹', '').trim().split("\n");
+        // TODO: 参数传递有问题 需要确认下是接口定义参数错误 还是 参数传递问题
+        // shimo.addFiles(name, guid)
     }
   }
 }
