@@ -9,7 +9,7 @@ class Shimo {
   scope: string;
   url: string;
   status: string; // TODO 这里应该声明什么类型啊？ 最简单的是string 但是不是很好
-  token: string;
+  // token: string; // TODO: 这个是想要定义一个公用的？
   files: Map<string, string>;
 
   constructor(clientId: string = '', clientSecret: string = '', userName: string = '', scope: string = '', url: string = '', status = ShimoStatus.Prepare) {
@@ -176,7 +176,7 @@ class Shimo {
         }
       }
     });
-
+    return jsonStr;
   }
 
   /**

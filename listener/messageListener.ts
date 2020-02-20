@@ -3,8 +3,6 @@ import { MessageType } from 'wechaty-puppet'
 import { InfoSubscribe } from '../manager/info/subscribe';
 import { InfoQuery } from '../manager/info/query';
 import { InfoShimo } from '../manager/info/shimo';
-import { shimo } from "../tools/shimoTool";
-import { ShimoStatus } from "../config/enum";
 
 export const messageListener = async (message: Message) => {
   const contact = message.from();
